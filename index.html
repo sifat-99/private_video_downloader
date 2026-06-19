@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook Private Video Downloader | Free Extractor Tool</title>
+  <meta name="description" content="Download Facebook private videos using the view page source method. Free, secure, and client-side tool to extract video links directly from HTML source.">
+  
+  <!-- Google Fonts - Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="scroller">
+
+  <header>
+    <h1>FB Private Downloader</h1>
+    <p class="subtitle">Extract and download private Facebook videos using the page source code safely and entirely inside your browser.</p>
+  </header>
+
+  <main>
+    <!-- Section 1: Instructions & Guide -->
+    <section class="card" aria-labelledby="guide-heading">
+      <h2 id="guide-heading" class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+        </svg>
+        How to get the source code
+      </h2>
+      
+      <div class="guide-tabs">
+        <button type="button" class="tab-btn active" data-tab="chrome">Chrome / Edge</button>
+        <button type="button" class="tab-btn" data-tab="firefox">Firefox</button>
+        <button type="button" class="tab-btn" data-tab="safari">Safari (Mac)</button>
+      </div>
+
+      <div class="tab-content active" id="tab-chrome">
+        <ul class="step-list">
+          <li>
+            <span class="step-number">1</span>
+            <div>Open the Facebook video in a new tab. Make sure you can see it playing or loaded.</div>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <div>Press <kbd>Ctrl</kbd> + <kbd>U</kbd> (Windows/Linux) or <kbd>Option</kbd> + <kbd>Cmd</kbd> + <kbd>U</kbd> (Mac) to open the page source. Alternatively, right-click and click <strong>View Page Source</strong>.</div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>Select everything by pressing <kbd>Ctrl</kbd> + <kbd>A</kbd> (Windows/Linux) or <kbd>Cmd</kbd> + <kbd>A</kbd> (Mac) and copy it (<kbd>Ctrl</kbd> + <kbd>C</kbd> / <kbd>Cmd</kbd> + <kbd>C</kbd>).</div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content" id="tab-firefox">
+        <ul class="step-list">
+          <li>
+            <span class="step-number">1</span>
+            <div>Open the Facebook video in Firefox.</div>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <div>Right-click anywhere on the page and select <strong>View Page Source</strong>, or press <kbd>Ctrl</kbd> + <kbd>U</kbd> / <kbd>Cmd</kbd> + <kbd>U</kbd>.</div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>Copy all content (<kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd>).</div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content" id="tab-safari">
+        <ul class="step-list">
+          <li>
+            <span class="step-number">1</span>
+            <div>Open Safari, go to Settings &gt; Advanced, and make sure <strong>"Show Develop menu in menu bar"</strong> is enabled.</div>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <div>Open the Facebook video, right-click the page, and select <strong>Show Page Source</strong>, or press <kbd>Option</kbd> + <kbd>Cmd</kbd> + <kbd>U</kbd>.</div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>Click inside the source panel, select all, and copy the code.</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 2: Paste Area & Form -->
+    <section class="card" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        Paste Page Source
+      </h2>
+      <form id="extract-form" class="form-group">
+        <div class="textarea-wrapper">
+          <textarea 
+            id="source-code" 
+            class="source-input scroller" 
+            placeholder="Right-click Facebook video page, view source, select all, copy, and paste it here..." 
+            spellcheck="false"
+            required></textarea>
+        </div>
+        <div class="input-actions">
+          <span class="char-counter" id="char-counter">0 characters</span>
+          <div class="util-btns">
+            <button type="button" class="util-btn" id="paste-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Paste
+            </button>
+            <button type="button" class="util-btn" id="clear-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn" id="submit-btn">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Extract Video Links
+        </button>
+      </form>
+    </section>
+
+    <!-- Loading Animation Panel -->
+    <div class="loading-overlay card" id="loading-overlay">
+      <div class="spinner"></div>
+      <div class="loading-text" id="loading-text">Analyzing page source...</div>
+      <div class="loading-subtext">This process runs fully locally in your browser.</div>
+    </div>
+
+    <!-- Section 3: Extracted Results -->
+    <section class="card result-card" id="result-card">
+      <h2 class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        Ready to Download
+      </h2>
+      <div class="result-container">
+        <div class="video-meta">
+          <div class="video-title" id="res-title">Facebook Private Video</div>
+          <div class="video-desc" id="res-desc">Extracted video stream links:</div>
+        </div>
+        
+        <!-- Live Preview Component -->
+        <div class="video-preview">
+          <video id="video-preview-player" controls preload="metadata">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="download-options" id="download-options">
+          <!-- Dynamically inserted quality boxes -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Extraction History -->
+    <section class="card history-card" aria-labelledby="history-heading">
+      <h2 id="history-heading" class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        Extraction History
+      </h2>
+      <div class="history-list scroller" id="history-list">
+        <!-- History items inserted dynamically -->
+        <div class="empty-history" id="empty-history">No videos extracted yet. Your history is stored locally.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Private Video Extractor. 100% Client-Side. No data is sent to external servers.</p>
+    <p style="margin-top: 0.5rem;"><a href="#" id="terms-link">Disclaimer</a></p>
+  </footer>
+
+  <!-- Modal Dialog for fallback download help -->
+  <dialog class="help-modal" id="help-modal">
+    <div class="modal-header">
+      <div class="modal-title">How to save the video</div>
+      <button type="button" class="icon-btn" id="modal-close-btn" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-content">
+      <p>If clicking "Download" simply opens the video in a new tab instead of saving it, please try the following:</p>
+      <ul style="padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <li>Right-click the <strong>Download</strong> button and choose <strong>"Save Link As..."</strong>.</li>
+        <li>On mobile devices, press and hold the <strong>Download</strong> button, then select <strong>"Download Link"</strong>.</li>
+        <li>If the video opens in a new tab, click the <strong>three dots vertical menu</strong> on the video player and choose <strong>Download</strong>, or press <kbd>Ctrl</kbd> + <kbd>S</kbd> / <kbd>Cmd</kbd> + <kbd>S</kbd> to save.</li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="action-btn" id="modal-ok-btn" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Got it</button>
+    </div>
+  </dialog>
+
+  <!-- Modal Dialog for Disclaimer -->
+  <dialog class="help-modal" id="disclaimer-modal">
+    <div class="modal-header">
+      <div class="modal-title">Disclaimer & Notice</div>
+      <button type="button" class="icon-btn" id="disclaimer-close-btn" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-content">
+      <p>This web application acts solely as a client-side parser to assist users in extracting direct media links from the HTML page source of Facebook video pages they already have access to.</p>
+      <p>We do not store, copy, host, or share any video files, page sources, or user data. All parsing and caching are performed locally in your own web browser.</p>
+      <p>You are solely responsible for ensuring you have the legal right to download and access the media content you extract, in compliance with Facebook's terms of service and copyright laws in your jurisdiction.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="action-btn" id="disclaimer-ok-btn" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">I Understand</button>
+    </div>
+  </dialog>
+
+  <!-- Copy Toast Notification -->
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
