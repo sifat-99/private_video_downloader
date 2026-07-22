@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const historyList = document.getElementById('history-list');
   const emptyHistory = document.getElementById('empty-history');
   const toast = document.getElementById('toast');
-  
+
   // Modals
   const helpModal = document.getElementById('help-modal');
   const modalCloseBtn = document.getElementById('modal-close-btn');
   const modalOkBtn = document.getElementById('modal-ok-btn');
-  
+
   const disclaimerModal = document.getElementById('disclaimer-modal');
   const disclaimerLink = document.getElementById('terms-link');
   const disclaimerCloseBtn = document.getElementById('disclaimer-close-btn');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       tabContents.forEach(c => c.classList.remove('active'));
-      
+
       tab.classList.add('active');
       const targetContent = document.getElementById(`tab-${tab.dataset.tab}`);
       if (targetContent) {
@@ -71,10 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 3. URL Extraction Engine ---
   const cleanUrl = (url) => {
     let cleaned = url;
-    
+
     // 1. Strip trailing XML tags like \u003c/BaseURL or </BaseURL if captured
     cleaned = cleaned.split(/[\\/]u003c/i)[0].split('<')[0];
-    
+
     // 2. Decode unicode escapes first (e.g. \u0026 -> &)
     try {
       cleaned = JSON.parse('"' + cleaned + '"');
@@ -85,41 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
         .replace(/\\u0022/g, '"')
         .replace(/\\u0027/g, "'");
     }
-    
+
     // 3. Replace escaped slashes (\/ -> /)
     cleaned = cleaned.replace(/\\\//g, '/');
-    
+
     // 4. Decode html entities like &amp; using temporary element
     const txt = document.createElement("textarea");
     txt.innerHTML = cleaned;
     cleaned = txt.value;
-    
+
     // 5. Clean up any accidental wrapping symbols
     cleaned = cleaned.replace(/^["'\\]+|["'\\]+$/g, '');
-    
+
     return cleaned;
   };
 
   const isValidVideoUrl = (url) => {
     if (!url) return false;
     const lower = url.toLowerCase();
-    
+
     // Must contain fbcdn.net
     if (!lower.includes('fbcdn.net')) return false;
-    
+
     // Exclude static resources and domains
     if (lower.includes('static.xx.fbcdn.net') || lower.includes('/rsrc.php/')) return false;
-    
+
     // Exclude common static asset file types unless they explicitly contain video streaming extensions
     const staticExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2', '.svg', '.json'];
     const hasStaticExt = staticExtensions.some(ext => lower.includes(ext));
-    
+
     if (hasStaticExt) {
       if (!lower.includes('.mp4') && !lower.includes('.mpd') && !lower.includes('.m4v') && !lower.includes('.m4a') && !lower.includes('.m3u8')) {
         return false;
       }
     }
-    
+
     return true;
   };
 
@@ -134,12 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const classifyUrl = (url, sourceName) => {
     const lowerUrl = url.toLowerCase();
-    
+
     // Default values
-    let type = 'video_with_audio'; 
+    let type = 'video_with_audio';
     let label = 'Full Video (with Audio)';
     let quality = 'SD';
-    
+
     // 1. Try decoding the efg parameter first to inspect the internal stream tag
     let vencodeTag = '';
     const efgMatch = url.match(/[?&]efg=([^&]+)/);
@@ -152,9 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {
         try {
           rawEfg = unescape(rawEfg);
-        } catch (err) {}
+        } catch (err) { }
       }
-      
+
       const decoded = safeAtob(rawEfg);
       try {
         const efgObj = JSON.parse(decoded);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const tagLower = vencodeTag.toLowerCase();
-    
+
     // 2. Classify based on the decoded vencode_tag if successfully parsed
     if (tagLower) {
       if (tagLower.includes('audio')) {
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const extractVideoUrls = (htmlContent) => {
     const foundUrls = {}; // Key: type_quality to allow separate HD-silent, SD-audio, and audio-only streams
     const seenUrls = new Set();
-    
+
     // A. Search by specific metadata keys (these are always progressive)
     const keyPatterns = [
       { name: 'browser_native_hd_url', regex: /"browser_native_hd_url"\s*:\s*"([^"]+)"/g },
@@ -256,21 +256,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // B. Fallback Scan: General CDN search
     const cdnRegex = /https?:(?:\\?\/|\\+\/){2}[a-zA-Z0-9.-]*fbcdn\.net(?:\\?\/|\\+\/)[^\s"'>]+/gi;
     let cdnMatch;
-    
+
     while ((cdnMatch = cdnRegex.exec(htmlContent)) !== null) {
       let rawUrl = cdnMatch[0];
       let cleaned = cleanUrl(rawUrl);
-      
+
       if (isValidVideoUrl(cleaned) && !seenUrls.has(cleaned)) {
         seenUrls.add(cleaned);
         const classification = classifyUrl(cleaned, 'General CDN Scan');
         const key = `${classification.type}_${classification.quality}`;
-        
+
         // Prioritize mp4 over other extensions (like .kf)
         const isMp4 = cleaned.toLowerCase().includes('.mp4');
         const currentUrl = foundUrls[key] ? foundUrls[key].url.toLowerCase() : '';
         const currentIsMp4 = currentUrl.includes('.mp4');
-        
+
         if (!foundUrls[key] || (isMp4 && !currentIsMp4)) {
           foundUrls[key] = {
             url: cleaned,
@@ -286,14 +286,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const extractVideoTitle = (htmlContent) => {
     // 1. og:title
-    const ogTitleMatch = htmlContent.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']/i) || 
-                         htmlContent.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:title["']/i);
+    const ogTitleMatch = htmlContent.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']/i) ||
+      htmlContent.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:title["']/i);
     if (ogTitleMatch && ogTitleMatch[1]) {
       const temp = document.createElement("textarea");
       temp.innerHTML = ogTitleMatch[1];
       return temp.value.trim();
     }
-    
+
     // 2. HTML Title tag
     const titleMatch = htmlContent.match(/<title[^>]*>([^<]+)<\/title>/i);
     if (titleMatch && titleMatch[1]) {
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 4. Main Submission Logic ---
   extractForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const htmlContent = sourceCodeInput.value.trim();
     if (!htmlContent) {
       showToast('Please paste the page source code first.', true);
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset UI states
     resultCard.style.display = 'none';
     videoPreviewPlayer.src = '';
-    
+
     // Show loading flow
     loadingOverlay.style.display = 'flex';
     submitBtn.disabled = true;
@@ -345,6 +345,95 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const mergeVideoAudio = async (videoUrl, audioUrl, title) => {
+    const mergeOverlay = document.getElementById('merge-overlay');
+    const mergeText = document.getElementById('merge-text');
+    const mergeProgressContainer = document.getElementById('merge-progress-container');
+    const mergeProgressFill = document.getElementById('merge-progress-fill');
+    
+    mergeOverlay.style.display = 'flex';
+    mergeProgressContainer.style.display = 'block';
+    mergeProgressFill.style.width = '0%';
+    
+    try {
+      if (!window.FFmpegWASM || !window.FFmpegUtil) {
+        throw new Error('FFmpeg libraries not loaded.');
+      }
+      
+      const { FFmpeg } = window.FFmpegWASM;
+      const { fetchFile } = window.FFmpegUtil;
+      const ffmpeg = new FFmpeg();
+      
+      ffmpeg.on('progress', ({ progress }) => {
+        mergeText.textContent = 'Merging in browser...';
+        mergeProgressFill.style.width = `${Math.round(progress * 100)}%`;
+      });
+      
+      mergeText.textContent = 'Loading FFmpeg Core (this may take a moment)...';
+      
+      // Since we are running on a local server, we can load the files directly
+      // Use absolute path so the worker resolves it correctly
+      const coreBase = '/lib/ffmpeg';
+      
+      await ffmpeg.load({
+        coreURL: `${coreBase}/ffmpeg-core.js`,
+        wasmURL: `${coreBase}/ffmpeg-core.wasm`
+      });
+      
+      mergeText.textContent = 'Downloading Video & Audio streams into memory...';
+      
+      // Use our local proxy server to bypass FB CDN CORS restrictions
+      const proxyVideoUrl = '/proxy?url=' + encodeURIComponent(videoUrl);
+      const proxyAudioUrl = '/proxy?url=' + encodeURIComponent(audioUrl);
+      
+      const videoData = await fetchFile(proxyVideoUrl);
+      const audioData = await fetchFile(proxyAudioUrl);
+      
+      mergeText.textContent = 'Downloading video stream...';
+      await ffmpeg.writeFile('video.mp4', videoData);
+      
+      mergeText.textContent = 'Downloading audio stream...';
+      await ffmpeg.writeFile('audio.m4a', audioData);
+      
+      mergeText.textContent = 'Merging streams...';
+      const ret = await ffmpeg.exec([
+        '-i', 'video.mp4',
+        '-i', 'audio.m4a',
+        '-map', '0:v', // Map video stream from first input
+        '-map', '1:a', // Map audio stream from second input
+        '-c:v', 'copy', // Copy video as-is
+        '-c:a', 'aac',  // Re-encode audio to AAC to ensure MP4/Mac compatibility
+        'output.mp4'
+      ]);
+      
+      if (ret !== 0) {
+        throw new Error(`FFmpeg exited with code ${ret}`);
+      }
+      
+      mergeText.textContent = 'Finalizing file...';
+      const data = await ffmpeg.readFile('output.mp4');
+      
+      const blob = new Blob([data.buffer], { type: 'video/mp4' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_merged.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      
+      URL.revokeObjectURL(url);
+      showToast('Merge and download complete!');
+    } catch (err) {
+      console.error('Merge failed:', err);
+      showToast('Merge failed. This might be due to CORS restrictions or memory limits.', true);
+    } finally {
+      mergeOverlay.style.display = 'none';
+      mergeProgressFill.style.width = '0%';
+    }
+  };
+
   const executeExtraction = (htmlContent) => {
     try {
       const results = extractVideoUrls(htmlContent);
@@ -363,10 +452,10 @@ document.addEventListener('DOMContentLoaded', () => {
       resTitle.textContent = title;
 
       // Select progressive stream with audio for preview if available, otherwise fallback
-      const previewSource = results.find(r => r.type === 'video_with_audio') || 
-                            results.find(r => r.type === 'video_only') || 
-                            results[0];
-      
+      const previewSource = results.find(r => r.type === 'video_with_audio') ||
+        results.find(r => r.type === 'video_only') ||
+        results[0];
+
       const previewContainer = document.querySelector('.video-preview');
       if (previewSource && previewSource.type !== 'audio_only') {
         previewContainer.style.display = 'flex';
@@ -377,15 +466,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Render Download option boxes
       downloadOptions.innerHTML = '';
+      
+      // Check if we can merge video + audio
+      let bestVideoRes = results.find(r => r.type === 'video_only' && r.quality === 'HD') ||
+                         results.find(r => r.type === 'video_with_audio' && r.quality === 'HD') ||
+                         results.find(r => r.type === 'video_with_audio') ||
+                         results.find(r => r.type === 'video_only');
+      let audioRes = results.find(r => r.type === 'audio_only');
+      
+      if (bestVideoRes && audioRes) {
+        const mergeBox = document.createElement('div');
+        mergeBox.className = 'download-box';
+        mergeBox.style.border = '2px solid var(--accent-blue)';
+        mergeBox.style.background = 'rgba(74, 144, 226, 0.05)';
+        
+        mergeBox.innerHTML = `
+          <div class="quality-badge hd" style="background: var(--accent-blue);">
+            Merge HD Video + Audio (Recommended)
+          </div>
+          <div class="download-actions">
+            <button type="button" class="action-btn btn-merge" data-video="${bestVideoRes.url}" data-audio="${audioRes.url}" style="background: var(--accent-blue); width: 100%;">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+              Merge & Download Full HD
+            </button>
+            <span style="font-size: 0.8rem; color: var(--accent-blue); margin-top: -0.25rem; text-align: center; font-weight: 500;">Combines DASH streams in browser</span>
+          </div>
+        `;
+        downloadOptions.appendChild(mergeBox);
+        
+        mergeBox.querySelector('.btn-merge').addEventListener('click', (e) => {
+          const vUrl = e.currentTarget.dataset.video;
+          const aUrl = e.currentTarget.dataset.audio;
+          mergeVideoAudio(vUrl, aUrl, title);
+        });
+      }
+
       results.forEach(res => {
         const dBox = document.createElement('div');
         dBox.className = 'download-box';
-        
+
         let badgeClass = res.quality.toLowerCase();
         if (res.type === 'audio_only') {
           badgeClass = 'audio';
         }
-        
+
         let downloadLabel = 'Download video';
         let subText = '';
         if (res.type === 'audio_only') {
@@ -478,15 +604,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let history = JSON.parse(localStorage.getItem('fb_downloader_history')) || [];
     // Remove if already exists (matching titles or link URLs)
     history = history.filter(h => h.title !== item.title);
-    
+
     // Add to front
     history.unshift(item);
-    
+
     // Limit to 10 items
     if (history.length > 10) {
       history.pop();
     }
-    
+
     localStorage.setItem('fb_downloader_history', JSON.stringify(history));
     renderHistory();
   };
@@ -501,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const renderHistory = () => {
     const history = JSON.parse(localStorage.getItem('fb_downloader_history')) || [];
-    
+
     if (history.length === 0) {
       historyList.innerHTML = '<div class="empty-history" id="empty-history">No videos extracted yet. Your history is stored locally.</div>';
       return;
@@ -511,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     history.forEach((item, index) => {
       const itemEl = document.createElement('div');
       itemEl.className = 'history-item';
-      
+
       // Select main link (HD if available)
       const mainLinkObj = item.links.find(l => l.quality === 'HD') || item.links[0];
       const mainUrl = mainLinkObj ? mainLinkObj.url : '#';
@@ -568,10 +694,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Close buttons
   modalCloseBtn.addEventListener('click', () => helpModal.close());
   modalOkBtn.addEventListener('click', () => helpModal.close());
-  
+
   disclaimerCloseBtn.addEventListener('click', () => disclaimerModal.close());
   disclaimerOkBtn.addEventListener('click', () => disclaimerModal.close());
-  
+
   disclaimerLink.addEventListener('click', (e) => {
     e.preventDefault();
     disclaimerModal.showModal();
@@ -581,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
   helpModal.addEventListener('click', (e) => {
     const rect = helpModal.getBoundingClientRect();
     const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-                        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
     if (!isInDialog) {
       helpModal.close();
     }
@@ -590,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
   disclaimerModal.addEventListener('click', (e) => {
     const rect = disclaimerModal.getBoundingClientRect();
     const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-                        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
     if (!isInDialog) {
       disclaimerModal.close();
     }
@@ -601,14 +727,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const showToast = (message, isError = false) => {
     clearTimeout(toastTimeout);
     toast.textContent = message;
-    
+
     // Customize toast coloring based on success/error
     if (isError) {
       toast.style.background = 'var(--accent-error)';
     } else {
       toast.style.background = 'var(--accent-success)';
     }
-    
+
     toast.classList.add('show');
     toastTimeout = setTimeout(() => {
       toast.classList.remove('show');
